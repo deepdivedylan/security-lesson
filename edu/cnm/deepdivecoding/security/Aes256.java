@@ -22,17 +22,33 @@ class Aes256 {
 	private byte[] salt;
 
 	public Aes256(String password) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException {
-		this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		SecureRandom random = new SecureRandom();
-		this.salt = new byte[32];
-		random.nextBytes(this.salt);
-		this.setKey(password);
+		try {
+			this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			SecureRandom random = new SecureRandom();
+			this.salt = new byte[32];
+			random.nextBytes(this.salt);
+			this.setKey(password);
+		} catch(InvalidKeySpecException invalidKeySpec) {
+			throw(new InvalidKeySpecException(invalidKeySpec.getMessage(), invalidKeySpec));
+		} catch(NoSuchAlgorithmException noSuchAlgorithm) {
+			throw(new NoSuchAlgorithmException(noSuchAlgorithm.getMessage(), noSuchAlgorithm));
+		} catch(NoSuchPaddingException noSuchPadding) {
+			throw(new NoSuchPaddingException(noSuchPadding.getMessage()));
+		}
 	}
 
 	public Aes256(String password, String salt) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException {
-		this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		this.setSalt(salt);
-		this.setKey(password);
+		try {
+			this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			this.setSalt(salt);
+			this.setKey(password);
+		} catch(InvalidKeySpecException invalidKeySpec) {
+			throw(new InvalidKeySpecException(invalidKeySpec.getMessage(), invalidKeySpec));
+		} catch(NoSuchAlgorithmException noSuchAlgorithm) {
+			throw(new NoSuchAlgorithmException(noSuchAlgorithm.getMessage(), noSuchAlgorithm));
+		} catch(NoSuchPaddingException noSuchPadding) {
+			throw(new NoSuchPaddingException(noSuchPadding.getMessage()));
+		}
 	}
 
 	public SecretKey getKey() {
