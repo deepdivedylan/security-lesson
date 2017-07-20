@@ -5,6 +5,8 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -13,19 +15,22 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 class Aes256 {
+	private Cipher cipher;
 	private SecretKey key;
 	private SecretKeyFactory keyFactory;
 	private KeySpec keySpec;
 	private byte[] salt;
 
-	public Aes256(String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public Aes256(String password) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException {
+		this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		SecureRandom random = new SecureRandom();
 		this.salt = new byte[32];
 		random.nextBytes(this.salt);
 		this.setKey(password);
 	}
 
-	public Aes256(String password, String salt) throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public Aes256(String password, String salt) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException {
+		this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 		this.setSalt(salt);
 		this.setKey(password);
 	}
