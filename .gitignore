@@ -1,0 +1,5 @@
+/.idea
+/.sync-config.cson
+.DS_Store
+*.class
+*.jar
