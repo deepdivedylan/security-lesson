@@ -9,14 +9,16 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import javax.xml.bind.DatatypeConverter;
+
 class Aes256 {
 	private SecretKey key;
 	private SecretKeyFactory keyFactory;
 	private KeySpec keySpec;
 	private byte[] salt;
 
-	public Aes256(String password, byte[] newSalt) throws InvalidKeySpecException, NoSuchAlgorithmException {
-		this.setSalt(newSalt);
+	public Aes256(String password, String salt) throws InvalidKeySpecException, NoSuchAlgorithmException {
+		this.setSalt(salt);
 		this.setKey(password);
 	}
 
@@ -37,11 +39,11 @@ class Aes256 {
 		}
 	}
 
-	public byte[] getSalt() {
-		return(this.salt);
+	public String getSalt() {
+		return(DatatypeConverter.printHexBinary(this.salt));
 	}
 
-	public void setSalt(byte[] newSalt) {
-		this.salt = newSalt;
+	public void setSalt(String salt) {
+		this.salt = DatatypeConverter.parseHexBinary(salt);
 	}
 }
