@@ -1,6 +1,7 @@
 package edu.cnm.deepdivecoding.security;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
@@ -16,6 +17,13 @@ class Aes256 {
 	private SecretKeyFactory keyFactory;
 	private KeySpec keySpec;
 	private byte[] salt;
+
+	public Aes256(String password) throws InvalidKeySpecException, NoSuchAlgorithmException {
+		SecureRandom random = new SecureRandom();
+		this.salt = new byte[32];
+		random.nextBytes(this.salt);
+		this.setKey(password);
+	}
 
 	public Aes256(String password, String salt) throws InvalidKeySpecException, NoSuchAlgorithmException {
 		this.setSalt(salt);
