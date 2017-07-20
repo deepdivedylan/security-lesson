@@ -1,14 +1,22 @@
 package edu.cnm.deepdivecoding.security;
 
+import java.io.UnsupportedEncodingException;
+
+import java.security.AlgorithmParameters;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.KeySpec;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -74,5 +82,25 @@ class Aes256 {
 
 	public void setSalt(String salt) {
 		this.salt = DatatypeConverter.parseHexBinary(salt);
+	}
+
+	public String encrypt(String plaintext) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, InvalidParameterSpecException, UnsupportedEncodingException {
+		try {
+			this.cipher.init(Cipher.ENCRYPT_MODE, this.key);
+			AlgorithmParameters params = cipher.getParameters();
+			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
+			byte[] ciphertext = cipher.doFinal(plaintext.getBytes("UTF-8"));
+			return(new String(ciphertext));
+		} catch(BadPaddingException badPadding) {
+			throw(new BadPaddingException(badPadding.getMessage()));
+		} catch(IllegalBlockSizeException illegalBlockSize) {
+			throw(new IllegalBlockSizeException(illegalBlockSize.getMessage()));
+		} catch(InvalidKeyException invalidKey) {
+			throw(new InvalidKeyException(invalidKey.getMessage(), invalidKey));
+		} catch(InvalidParameterSpecException invalidParameterSpec) {
+			throw(new InvalidParameterSpecException(invalidParameterSpec.getMessage()));
+		} catch(UnsupportedEncodingException unsupportedEncoding) {
+			throw(new UnsupportedEncodingException(unsupportedEncoding.getMessage()));
+		}
 	}
 }
