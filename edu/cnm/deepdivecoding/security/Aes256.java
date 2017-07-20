@@ -113,7 +113,7 @@ class Aes256 {
 			AlgorithmParameters params = cipher.getParameters();
 			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
 			byte[] ciphertext = cipher.doFinal(plaintext.getBytes("UTF-8"));
-			return(new String(ciphertext));
+			return(DatatypeConverter.printHexBinary(ciphertext));
 		} catch(BadPaddingException badPadding) {
 			throw(new BadPaddingException(badPadding.getMessage()));
 		} catch(IllegalBlockSizeException illegalBlockSize) {

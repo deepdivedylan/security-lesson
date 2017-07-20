@@ -7,14 +7,25 @@ import java.io.IOException;
 class Aes256Driver {
 
 	public static void main(String[] main) {
+		String ciphertext = new String();
+		String plaintext = new String();
 		String password = new String();
+		String salt = new String();
 
-			try {
+		try {
 			BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 			System.out.print("Enter password: ");
 			password = stdin.readLine();
-		} catch (IOException ioException) {
-			System.err.println("Exception: " + ioException.getMessage());
+			Aes256 aes256 = new Aes256(password);
+			salt = aes256.getSalt();
+			System.out.println("Salt: " + salt);
+			System.out.print("Enter plaintext: ");
+			plaintext = stdin.readLine();
+			ciphertext = aes256.encrypt(plaintext);
+			System.out.println("Ciphertext: " + ciphertext);
+		} catch(Exception exception) {
+			System.err.println(exception.getClass().getSimpleName() + ": " + exception.getMessage());
+			exception.printStackTrace();
 		}
 	}
 }
