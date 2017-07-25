@@ -78,7 +78,7 @@ class Aes256 {
 	}
 
 	public String getSalt() {
-		return(DatatypeConverter.printHexBinary(this.salt));
+		return(DatatypeConverter.printHexBinary(this.salt).toLowerCase());
 	}
 
 	public void setSalt(String salt) {
@@ -113,7 +113,7 @@ class Aes256 {
 			AlgorithmParameters params = cipher.getParameters();
 			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
 			byte[] ciphertext = cipher.doFinal(plaintext.getBytes("UTF-8"));
-			return(DatatypeConverter.printHexBinary(ciphertext));
+			return(DatatypeConverter.printBase64Binary(ciphertext));
 		} catch(BadPaddingException badPadding) {
 			throw(new BadPaddingException(badPadding.getMessage()));
 		} catch(IllegalBlockSizeException illegalBlockSize) {
