@@ -90,7 +90,8 @@ class Aes256 {
 			AlgorithmParameters params = cipher.getParameters();
 			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
 			this.cipher.init(Cipher.DECRYPT_MODE, this.key, new IvParameterSpec(iv));
-			String plaintext = new String(cipher.doFinal(DatatypeConverter.parseBase64Binary(ciphertext)), "UTF-8");
+			byte[] cipherArray = DatatypeConverter.parseBase64Binary(ciphertext);
+			String plaintext = new String(cipher.doFinal(cipherArray));
 			return(plaintext);
 		} catch(BadPaddingException badPadding) {
 			throw(new BadPaddingException(badPadding.getMessage()));
@@ -102,8 +103,6 @@ class Aes256 {
 			throw(new InvalidKeyException(invalidKey.getMessage(), invalidKey));
 		} catch(InvalidParameterSpecException invalidParameterSpec) {
 			throw(new InvalidParameterSpecException(invalidParameterSpec.getMessage()));
-		} catch(UnsupportedEncodingException unsupportedEncoding) {
-			throw(new UnsupportedEncodingException(unsupportedEncoding.getMessage()));
 		}
 	}
 
@@ -112,7 +111,7 @@ class Aes256 {
 			this.cipher.init(Cipher.ENCRYPT_MODE, this.key);
 			AlgorithmParameters params = cipher.getParameters();
 			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
-			byte[] ciphertext = cipher.doFinal(plaintext.getBytes("UTF-8"));
+			byte[] ciphertext = cipher.doFinal(plaintext.getBytes());
 			return(DatatypeConverter.printBase64Binary(ciphertext));
 		} catch(BadPaddingException badPadding) {
 			throw(new BadPaddingException(badPadding.getMessage()));
@@ -122,8 +121,6 @@ class Aes256 {
 			throw(new InvalidKeyException(invalidKey.getMessage(), invalidKey));
 		} catch(InvalidParameterSpecException invalidParameterSpec) {
 			throw(new InvalidParameterSpecException(invalidParameterSpec.getMessage()));
-		} catch(UnsupportedEncodingException unsupportedEncoding) {
-			throw(new UnsupportedEncodingException(unsupportedEncoding.getMessage()));
 		}
 	}
 }

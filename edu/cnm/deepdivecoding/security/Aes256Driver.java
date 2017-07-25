@@ -34,6 +34,7 @@ class Aes256Driver {
 					ciphertext = stdin.readLine();
 					plaintext = aes256.decrypt(ciphertext);
 					System.out.println("Plaintext: " + plaintext);
+					aes256 = null;
 				} else if(choice == 'E') {
 					System.out.print("Enter password: ");
 					password = stdin.readLine();
@@ -44,6 +45,7 @@ class Aes256Driver {
 					plaintext = stdin.readLine();
 					ciphertext = aes256.encrypt(plaintext);
 					System.out.println("Ciphertext: " + ciphertext);
+					aes256 = null;
 				} else if(choice == 'X') {
 					// do nothing
 				} else {
