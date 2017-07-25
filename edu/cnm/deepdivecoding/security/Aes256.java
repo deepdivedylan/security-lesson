@@ -90,7 +90,7 @@ class Aes256 {
 			AlgorithmParameters params = cipher.getParameters();
 			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
 			this.cipher.init(Cipher.DECRYPT_MODE, this.key, new IvParameterSpec(iv));
-			String plaintext = new String(cipher.doFinal(ciphertext.getBytes("UTF-8")), "UTF-8");
+			String plaintext = new String(cipher.doFinal(DatatypeConverter.parseBase64Binary(ciphertext)), "UTF-8");
 			return(plaintext);
 		} catch(BadPaddingException badPadding) {
 			throw(new BadPaddingException(badPadding.getMessage()));
