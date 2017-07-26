@@ -2,7 +2,6 @@ package edu.cnm.deepdivecoding.security;
 
 import java.io.UnsupportedEncodingException;
 
-import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -26,15 +25,13 @@ import javax.xml.bind.DatatypeConverter;
 class Aes256 {
 	private Cipher cipher;
 	private SecretKey key;
-	private SecretKeyFactory keyFactory;
-	private KeySpec keySpec;
 	private byte[] salt;
 
 	public Aes256(String password) throws InvalidKeySpecException, NoSuchAlgorithmException, NoSuchPaddingException {
 		try {
 			this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 			SecureRandom random = new SecureRandom();
-			this.salt = new byte[32];
+			this.salt = new byte[16];
 			random.nextBytes(this.salt);
 			this.setKey(password);
 		} catch(InvalidKeySpecException invalidKeySpec) {
@@ -87,8 +84,7 @@ class Aes256 {
 
 	public String decrypt(String ciphertext) throws BadPaddingException, IllegalBlockSizeException, InvalidAlgorithmParameterException, InvalidKeyException, InvalidParameterSpecException, UnsupportedEncodingException {
 		try {
-			AlgorithmParameters params = cipher.getParameters();
-			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
+			byte[] iv = salt;
 			this.cipher.init(Cipher.DECRYPT_MODE, this.key, new IvParameterSpec(iv));
 			byte[] cipherArray = DatatypeConverter.parseBase64Binary(ciphertext);
 			String plaintext = new String(cipher.doFinal(cipherArray));
@@ -101,16 +97,13 @@ class Aes256 {
 			throw(new InvalidAlgorithmParameterException(invalidAlgorithmParameter.getMessage(), invalidAlgorithmParameter));
 		} catch(InvalidKeyException invalidKey) {
 			throw(new InvalidKeyException(invalidKey.getMessage(), invalidKey));
-		} catch(InvalidParameterSpecException invalidParameterSpec) {
-			throw(new InvalidParameterSpecException(invalidParameterSpec.getMessage()));
 		}
 	}
 
-	public String encrypt(String plaintext) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, InvalidParameterSpecException, UnsupportedEncodingException {
+	public String encrypt(String plaintext) throws BadPaddingException, IllegalBlockSizeException, InvalidKeyException, InvalidAlgorithmParameterException, UnsupportedEncodingException {
 		try {
-			this.cipher.init(Cipher.ENCRYPT_MODE, this.key);
-			AlgorithmParameters params = cipher.getParameters();
-			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
+		    byte[] iv = salt;
+			this.cipher.init(Cipher.ENCRYPT_MODE, this.key, new IvParameterSpec(iv));
 			byte[] ciphertext = cipher.doFinal(plaintext.getBytes());
 			return(DatatypeConverter.printBase64Binary(ciphertext));
 		} catch(BadPaddingException badPadding) {
@@ -119,8 +112,8 @@ class Aes256 {
 			throw(new IllegalBlockSizeException(illegalBlockSize.getMessage()));
 		} catch(InvalidKeyException invalidKey) {
 			throw(new InvalidKeyException(invalidKey.getMessage(), invalidKey));
-		} catch(InvalidParameterSpecException invalidParameterSpec) {
-			throw(new InvalidParameterSpecException(invalidParameterSpec.getMessage()));
+        } catch(InvalidAlgorithmParameterException invalidAlgorithmParameter) {
+            throw(new InvalidAlgorithmParameterException(invalidAlgorithmParameter.getMessage(), invalidAlgorithmParameter));
 		}
 	}
 }
